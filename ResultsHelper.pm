@@ -5,7 +5,7 @@ package Data::ResultsHelper;
 use vars qw($AUTOLOAD $VERSION);
 use strict;
 
-$VERSION = '1.02';
+$VERSION = '1.03';
 
 sub new {
   my $type  = shift;
@@ -235,7 +235,9 @@ sub link_next_button {
 sub script_name {
   my $self = shift;
   unless($self->{script_name}) {
-    $ENV{PATH_INFO} ||= "";
+    $ENV{HTTP_HOST}   ||= "";
+    $ENV{SCRIPT_NAME} ||= "";
+    $ENV{PATH_INFO}   ||= "";
     $self->{script_name} = "http://$ENV{HTTP_HOST}$ENV{SCRIPT_NAME}$ENV{PATH_INFO}";
   }
   return $self->{script_name};
@@ -458,12 +460,58 @@ Data::ResultsHelper - Perl module to helps sort, paginate and display results se
 
 =head1 OVERVIEW
 
-  Data::ResultsHelper was written to help display results that can be thought of as an array of arrays.  Examples 
-  abound, and the more I work with it, the more I see examples.  Search results, stock ticker quotes, email 
-  message summaries, a directory listing, sql query results, this and so much more!
+  Data::ResultsHelper was written to help display results that can be thought of as an array of arrays.  I
+  call the structure results.  Examples abound, and the more I work with it, the more I see examples.  
+  Search results, stock ticker quotes, email message summaries, a directory listing, sql query results, 
+  this and so much more!
 
-  Data::ResultsHelper takes an array ref of array refs and changes it into a nicely organized hash ref.  Hash keys
+  Data::ResultsHelper takes the results and changes them into a nicely organized hash ref, which can then be
+  outputted using Template::Toolkit or the like.
+
+=head1 EXAMPLE
+
+  In the below example, I sub-class the Data::ResultsHelper::HTML.  Data::ResultsHelper is general enough that
+  results could be outputted in any number of ways: a csv file, XML, etc.  Please consult the Data::ResultsHelper::HTML
+  perldoc for more information.  I simply write a generate_results method which sets $self->{results}.  If 
+  $self->{set_cookie} is true, I attempt to cache result sets.  In that case, generate_results would only be 
+  called to generate fresh results.
+  
+  #!/usr/bin/perl -w
+
+  use strict;
+
+  {
+    my $self = Helper->new({
+      results_dir => '/tmp/stuff',
+    });
+    print $self->results2html;
+  }
+
+  package Helper;
+
+  use strict;
+
+  use Data::ResultsHelper::HTML;
+  use base qw(Data::ResultsHelper::HTML);
+
+  sub generate_results {
+    my $self = shift;
+    my $dir = shift || $self->{results_dir};
+    my $results = [
+      ['File', 'Directory', 'Size', 'Modified time'],
+    ];
+    require File::Find;
+    File::Find::find(sub {
+      my $fullpath = $File::Find::name = $File::Find::name;
+      my $dir = $File::Find::dir;
+      my @stat = stat $fullpath;
+      return if($fullpath =~ /^\.\.?$/);
+      return if(-d _);
+      push @{$results}, [$_, $File::Find::dir, $stat[7], $stat[9]];
+    }, $dir);
+    $self->{results} = $results;
+  }
 
 =head1 COPYRIGHT
 
-  Copyright 2003 Earl Cahill
+  Copyright 2003-2004 Earl Cahill

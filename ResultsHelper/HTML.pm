@@ -179,3 +179,60 @@ sub results_chunk {
 }
 
 1;
+
+__END__
+
+=head1 NAME
+
+Data::ResultsHelper::HTML - sub-classes Data::ResultsHelper to change results to html
+
+=head1 DEFAULTS
+
+  You can set the following options in your object.  The defaults are listed.
+
+    ### what the default cell will look like
+    cell_default    => '<td>-i-</td>',
+    
+    cell_default_hash => {
+      0 => '<td>-NUM-.&nbsp;-0-</td>',
+    },
+
+    ### an array of alternating colors to use
+    color_array     => ['#FFFFFF'],
+
+    ### what color to use for your header row
+    header_color    => '#FFFFFF',
+
+    ### the template for your header
+    header_template => qq|
+-table_declaration-
+  <tr bgcolor='-header_color-'>
+    -header_chunk-
+  </tr>
+  |,
+    results_template  => '-results_chunk-',
+    
+    ### opening table tag
+    table_declaration => '<table border=0>',
+
+    ### closing table tag
+    table_close       => '</table>',
+
+    ### template for the table of contents
+    toc_template => qq|
+<table>
+  <tr>
+    <td>-low- to -high- of -rows-</td>
+  </tr>
+  <tr>
+    <td>-pages- -back_next-</td>
+  </tr>
+</table>
+  |,
+
+    ### overall template
+    uber_template => qq|
+-toc_template-
+-header_template-
+-results_template-
+|,
