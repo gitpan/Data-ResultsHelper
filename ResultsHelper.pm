@@ -5,7 +5,7 @@ package Data::ResultsHelper;
 use vars qw($AUTOLOAD $VERSION);
 use strict;
 
-$VERSION = '1.03';
+$VERSION = '1.04';
 
 sub new {
   my $type  = shift;
@@ -484,6 +484,7 @@ Data::ResultsHelper - Perl module to helps sort, paginate and display results se
     my $self = Helper->new({
       results_dir => '/tmp/stuff',
     });
+    print "Content-type: text/html\n\n";
     print $self->results2html;
   }
 
