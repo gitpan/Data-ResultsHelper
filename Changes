@@ -1,6 +1,7 @@
 Revision history for Perl extension Data-ResultsHelper.
 
-0.01  Tue Aug  5 23:58:53 2003
-	- original version; created by h2xs 1.22 with options
-		-X -n Data-ResultsHelper
+1.02  Wed Jan 21          2003
+  - fixing a couple broken dependencies
 
+1.00  Mon Oct 20          2003
+	- first release to CPAN

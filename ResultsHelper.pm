@@ -4,10 +4,8 @@ package Data::ResultsHelper;
 
 use vars qw($AUTOLOAD $VERSION);
 use strict;
-use Is;
-use some_subs;
 
-$VERSION = '1.00';
+$VERSION = '1.02';
 
 sub new {
   my $type  = shift;

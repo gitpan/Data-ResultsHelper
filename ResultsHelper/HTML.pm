@@ -9,7 +9,6 @@ use Data::ResultsHelper;
 @ISA = qw(Data::ResultsHelper);
 
 use strict;
-use Is;
 
 sub new {
   my $type = shift;
